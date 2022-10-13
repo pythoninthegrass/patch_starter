@@ -1,11 +1,13 @@
+#!/usr/bin/env python3
+
 import argparse
 import base64
-from datetime import datetime
 import json
 import os
 import plistlib
 import subprocess
 import xml
+from datetime import datetime
 
 try:
     # Python 2 and 3 compatibility
@@ -14,6 +16,7 @@ except NameError:
     pass
 
 
+# TODO: replace with typer
 def arguments():
     parser = argparse.ArgumentParser(
         description='A script to create a basic patch definition from an '
@@ -91,21 +94,6 @@ def arguments():
     return parser.parse_args()
 
 
-def main():
-    args = arguments()
-    app_id, output = make_definition(args)
-
-    if args.output:
-        if args.patch_only:
-            filename = '{}-patch.json'.format(app_id)
-        else:
-            filename = '{}.json'.format(app_id)
-        with open(os.path.join(args.output, filename), 'w') as f:
-            json.dump(output, f)
-    else:
-        print(json.dumps(output, indent=4))
-
-
 def read_binary_plist(plist_path):
     process = subprocess.Popen(
         ['plutil', '-convert', 'json', '-o', '-', plist_path],
@@ -124,7 +112,9 @@ def make_definition(args):
     info_plist_path = os.path.join(args.path, 'Contents', 'Info.plist')
 
     try:
-        info_plist = plistlib.readPlist(info_plist_path)
+        # https://github.com/brysontyrrell/Patch-Starter-Script/pull/11/files
+        with open(info_plist_path, "rb") as info_plist_file:
+            info_plist = plistlib.load(info_plist_file)
     except EnvironmentError as err:
         print('ERROR: {}'.format(err))
         raise SystemExit(1)
@@ -257,6 +247,21 @@ def make_definition(args):
                 )
 
     return app_id, patch_def
+
+
+def main():
+    args = arguments()
+    app_id, output = make_definition(args)
+
+    if args.output:
+        if args.patch_only:
+            filename = '{}-patch.json'.format(app_id)
+        else:
+            filename = '{}.json'.format(app_id)
+        with open(os.path.join(args.output, filename), 'w') as f:
+            json.dump(output, f)
+    else:
+        print(json.dumps(output, indent=4))
 
 
 if __name__ == '__main__':
