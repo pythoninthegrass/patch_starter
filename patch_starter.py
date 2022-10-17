@@ -10,7 +10,7 @@ import xml
 from datetime import datetime
 
 try:
-    # Python 2 and 3 compatibility
+    # Python 2 and 3 compatibility: https://stackoverflow.com/a/54712937/15454191
     input = raw_input
 except NameError:
     pass

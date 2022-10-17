@@ -12,8 +12,8 @@ You can view the help text for the script by passing the `-h` or `--help`
 argument:
 
 ```text
-$ python patchstarter.py -h
-usage: patchstarter.py [-h] [-o <output_dir>] [-p <publisher_name>]
+$ python patch_starter.py -h
+usage: patch_starter.py [-h] [-o <output_dir>] [-p <publisher_name>]
                        [-n <name>] [-e <ext_att_path>]
                        [--app-version <version>] [--min-sys-version <version>]
                        [--patch-only]
@@ -62,7 +62,7 @@ To create a patch definition, pass the path to the application to the script and
 it will print the resulting JSON:
 
 ```bash
-$ python patchstarter.py /Applications/GitHub\ Desktop.app -p "Github"
+$ python patch_starter.py /Applications/GitHub\ Desktop.app -p "Github"
 ```
 
 ```json
@@ -136,14 +136,14 @@ Pass a path to a directory using the `-o` or `--output` argument to write a the
 patch definition to a JSON file:
 
 ```bash
-$ python patchstarter.py /Applications/GitHub\ Desktop.app -p "Github" -o .
+$ python patch_starter.py /Applications/GitHub\ Desktop.app -p "Github" -o .
 ```
 
 You can bundle an extension attribute into your patch definition by passing the
 path to the file tp the `-e` of `--extension-attribute` argument:
 
 ```bash
-$ python patchstarter.py /Applications/GitHub\ Desktop.app -p "Github" -e ext_att.sh
+$ python patch_starter.py /Applications/GitHub\ Desktop.app -p "Github" -e ext_att.sh
 ```
 
 You can use the `-e` argument multiple time. Each passed extension attribute
@@ -173,7 +173,7 @@ If you only want the patch itself and not the full definition (this is the data
 inside the `patches` array), pass the `--patch-only` argument:
 
 ```bash
-$ python patchstarter.py /Applications/GitHub\ Desktop.app --patch-only
+$ python patch_starter.py /Applications/GitHub\ Desktop.app --patch-only
 ```
 
 ```json
@@ -225,20 +225,20 @@ $ python patchstarter.py /Applications/GitHub\ Desktop.app --patch-only
 This option also works with writing out to a file:
 
 ```bash
-$ python patchstarter.py /Applications/GitHub\ Desktop.app --patch-only -o .
+$ python patch_starter.py /Applications/GitHub\ Desktop.app --patch-only -o .
 ```
 
 ## Working with Patch Server
 
 You can quickly create new software titles in the [Patch Server](https://github.com/brysontyrrell/PatchServer) project by piping
-the output from `patchstarter.py` into a `curl` command:
+the output from `patch_starter.py` into a `curl` command:
 
 ```bash
-$ curl -X POST http://localhost:5000/api/v1/title -d "$(python patchstarter.py /Applications/GitHub\ Desktop.app -p "GitHub" )" -H 'Content-Type: application/json'
+$ curl -X POST http://localhost:5000/api/v1/title -d "$(python patch_starter.py /Applications/GitHub\ Desktop.app -p "GitHub" )" -H 'Content-Type: application/json'
 ```
 
 You can do the same for POSTing a new version:
 
 ```bash
-$ curl -X POST http://localhost:5000/api/v1/title/GitHubDesktop/version -d "{\"items\": [$(python patchstarter.py /Applications/GitHub\ Desktop.app -p "GitHub" --patch-only)]}" -H 'Content-Type: application/json'
+$ curl -X POST http://localhost:5000/api/v1/title/GitHubDesktop/version -d "{\"items\": [$(python patch_starter.py /Applications/GitHub\ Desktop.app -p "GitHub" --patch-only)]}" -H 'Content-Type: application/json'
 ```
